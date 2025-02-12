@@ -1,10 +1,10 @@
-# RPEPL: Runic Polari-Esperanto Programming Language Interpreter
+# жуж: Runic Programming with Polari-Esperanto 
 
-Welcome to RPEPL!
+Welcome to жуж!
 Where ancient vibes meet modern code in a dance of runes and Roman numerals.
 
-## What is RPEPL?
-RPEPL is a simple interpreter that combines runic script with Roman numerals for a unique programming experience.
+## What is жуж?
+жуж is a simple interpreter that combines runic script with Roman numerals for a unique programming experience.
 
 ## How Does It Work?
 
@@ -25,12 +25,12 @@ Variable Declaration:
 - Basic error handling with "Naff funkcio" messages
 
 ## Usage
-Include rpepl.js in your HTML:
+Include zhuzh.js in your HTML:
 ```html
-<script src="rpepl.js"></script>
+<script src="zhuzh.js"></script>
 ```
 
-Write your RPEPL code:
+Write your жуж code:
 ```javascript
 ᚹᚨᛞᚨ ᛟᛗᛁ = XLII;
 ```
