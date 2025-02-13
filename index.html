@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>жуж Demo</title>
+    <style>
+        textarea { width: 100%; height: 200px; font-family: monospace; }
+        #output { white-space: pre; padding: 10px; background: #f0f0f0; }
+        .error { 
+            color: #d00; 
+            font-family: monospace; 
+            white-space: pre;
+        }
+        .debug { color: #666; font-family: monospace; font-size: 12px; white-space: pre; }
+
+    </style>
+</head>
+<body>
+    <h1>жуж Demo</h1>
+    <select id="demoSelect" onchange="switchDemo()">
+        <option value="basic">Basic Demo (Variables & If)</option>
+        <option value="factorial">Factorial Demo (While Loop)</option>
+        <option value="function">Function Demo (Factorial)</option>
+    </select>
+    <textarea id="code">ᚳᛟᛗ ᚹᚨᛞᚨ ᛞᛖᚲᛚᚨᚱᛟ (variable declaration)
+ᚹᚨᛞᚨ ᛟᛗᛁ ᛋ XLII ᛔ
+
+ᚳᛟᛗ ᚨᚱᛁᛏᛗᛖᛏᛁᚲᛟ (arithmetic)
+ᚹᚨᛞᚨ ᛋᚢᛗ ᛋ ᛟᛗᛁ ᛈᛚᚢᛋ X ᛔ  
+
+ᚳᛟᛗ ᛋᛖ-ᛞᛖᚲᛚᚨᚱᛟ (if statement)
+ᛁᚠ ᛗᛟᛗᛁ ᚷᚱᛖᚨᛏᛖᚱ XLᚠ ᛒ
+    ᚹᚨᛞᚨ ᚱᛖᛋᚢᛚᛏ ᛋ C ᛔ
+ᚲ ᛔ</textarea>
+    <button onclick="runCode()">Run</button>
+    <div id="output"></div>
+    <div id="variables"></div>
+    <div id="debug" class="debug"></div>
+
+    <script src="./src/zhuzh.js"></script>
+    <script>
+        
+            function debug(msg) {
+                const debug = document.getElementById('debug');
+                debug.textContent += msg + '\n';
+            }
+
+            const interpreter = new Zhuzh();
+
+            function runCode() {
+                try {
+                    const code = document.getElementById('code').value;
+                    debug('Input: ' + code);
+
+                    const tokens = interpreter.tokenize(code);
+                    debug('Tokens: ' + JSON.stringify(tokens, null, 2));
+
+                    const ast = interpreter.parse(tokens);
+                    debug('AST: ' + JSON.stringify(ast, null, 2));
+
+                    const result = interpreter.evaluate(ast);
+                    debug('Result: ' + result);
+
+                    const output = document.getElementById('output');
+                    output.textContent = result;
+                    output.className = String(result).startsWith('ᚾᚨᚠᚠ') ? 'error' : '';
+
+                    document.getElementById('variables').textContent =
+                        'Variables: ' + JSON.stringify(interpreter.variables, null, 2);
+                } catch (e) {
+                    debug('Error: ' + e.message);
+                    const output = document.getElementById('output');
+                    output.textContent = `ᚾᚨᚠᚠ ᚠᚢᚾᚲᛋᛁᛟ: ${e.message}`;
+                    output.className = 'error';
+                }
+            }
+
+            const demos = {
+                basic: `ᚳᛟᛗ ᚹᚨᛞᚨ ᛞᛖᚲᛚᚨᚱᛟ (variable declaration)
+ᚹᚨᛞᚨ ᛟᛗᛁ ᛋ XLII ᛔ
+
+ᚳᛟᛗ ᚨᚱᛁᛏᛗᛖᛏᛁᚲᛟ (arithmetic)
+ᚹᚨᛞᚨ ᛋᚢᛗ ᛋ ᛟᛗᛁ ᛈᛚᚢᛋ X ᛔ  
+
+ᚳᛟᛗ ᛋᛖ-ᛞᛖᚲᛚᚨᚱᛟ (if statement)
+ᛁᚠ ᛗᛟᛗᛁ ᚷᚱᛖᚨᛏᛖᚱ XLᚠ ᛒ
+    ᚹᚨᛞᚨ ᚱᛖᛋᚢᛚᛏ ᛋ C ᛔ
+ᚲ ᛔ`,
+                factorial: `ᚳᛟᛗ ᛏᛖᛋᛏ ᚹᚻᛁᛚᛖ-ᛚᚢᛈᛟ (while loop test)
+ᚹᚨᛞᚨ ᛟᛗᛁ ᛋ V ᛔ
+
+ᚳᛟᛗ ᚲᚨᛚᚲᚢᛚᛁ ᚠᚨᚲᛏᛟᚱᛁᚨᛚᛟᚾ (calculate factorial)
+ᚹᚨᛞᚨ ᚱᛖᛋᚢᛚᛏ ᛋ I ᛔ
+ᚹᚻᛁᛚᛖ ᛟᛗᛁ ᚷᚱᛖᚨᛏᛖᚱ I ᛒ
+    ᚹᚨᛞᚨ ᚱᛖᛋᚢᛚᛏ ᛋ ᚱᛖᛋᚢᛚᛏ ᛏᛁᛗᛖᛋ ᛟᛗᛁ ᛔ
+    ᚹᚨᛞᚨ ᛟᛗᛁ ᛋ ᛟᛗᛁ ᛗᛁᚾᚢᛋ I ᛔ
+ᚲ ᛔ`,
+                function: `ᚳᛟᛗ ᚠᚢᚾᚲᛋᛁᛟ ᚠᚨᚲᛏᛟᚱᛁᚨᛚᛟ (factorial function)
+ᚹᚨᛞᚨ ᚾᛟᛗᛁ ᛋ I ᛔ  ᚳᛟᛗ Declare parameter name first
+
+ᚠᚢᚾᚲ ᚠᚨᚲᛏᛟᚱ ᛗ ᚾᛟᛗᛁ ᚠ ᛒ
+    ᛁᚠ ᚾᛟᛗᛁ ᛚᛖᛋᛋ II ᛒ
+        ᚱᛖᛏ I ᛔ
+    ᚲ ᛔ
+    
+    ᚹᚨᛞᚨ ᚾᛖᚹᛟᛗᛁ ᛋ ᚾᛟᛗᛁ ᛗᛁᚾᚢᛋ I ᛔ
+    ᚱᛖᛏ ᚾᛟᛗᛁ ᛏᛁᛗᛖᛋ ᚠᚨᚲᛏᛟᚱ ᛗ ᚾᛖᚹᛟᛗᛁ ᚠ ᛔ
+ᚲ ᛔ
+
+ᚳᛟᛗ ᛏᛖᛋᛏᛟ (test)
+ᚹᚨᛞᚨ ᚱᛖᛋᚢᛚᛏ ᛋ ᚠᚨᚲᛏᛟᚱ ᛗ V ᚠ ᛔ  ᚳᛟᛗ Call factorial with 5`
+            };
+
+            function switchDemo() {
+                const select = document.getElementById('demoSelect');
+                const code = document.getElementById('code');
+                code.value = demos[select.value];
+            }
+    </script>
+
+	<a href="https://github.com/Rotwang9000/---">Source code</a>
+</body>
+</html>
